@@ -38,8 +38,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Solution](https://your-solution-url.com)
-- Live Site URL: [Live site](https://your-live-site-url.com)
+- Solution URL: [Solution](https://www.frontendmentor.io/solutions/todo-app-built-with-vanilla-javascript-cspRiegKs)
+- Live Site URL: [Live site](https://todo-app-main-tau.vercel.app/)
 
 ## My process
 
