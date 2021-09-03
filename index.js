@@ -9,11 +9,11 @@ const clearBtn = document.querySelector('.clear-btn')
 const allBtn = document.querySelector('.all-btn')
 const activeBtn = document.querySelector('.active-btn')
 const completedBtn = document.querySelector('.completed-btn')
-// const leadsFromLocalStorage = JSON.parse(localStorage.getItem('todoLists'))
+const leadsFromLocalStorage = JSON.parse(localStorage.getItem('todoLists'))
 
 /* function */
 //add todo list
-const render = (lists) => {
+const render = (lists, check) => {
   const listWrapper = document.createElement('div')
   const todoText = document.createElement('p')
   const todoCheckbox = document.createElement('input')
@@ -33,7 +33,7 @@ const render = (lists) => {
       todoCheckboxLabel.classList.remove('active')
       updateTodoLists(lists, false)
       countItems()
-      console.log(todoLists)
+      // console.log(todoLists)
     } else {
       todoCheckbox.checked = true
       todoText.style.textDecoration = 'line-through'
@@ -41,16 +41,25 @@ const render = (lists) => {
       todoCheckboxLabel.classList.add('active')
       updateTodoLists(lists, true)
       countItems()
-      console.log(todoLists)
+      // console.log(todoLists)
     }
   })
 
+  //delete todo list
   todoCloseBtn.src = './images/icon-cross.svg'
   todoCloseBtn.addEventListener('click', (e) => {
     e.target.parentElement.remove()
     todoLists = todoLists.filter((t) => t.value !== lists)
     countItems()
+    removeLocalTodos(listWrapper)
   })
+
+  function removeLocalTodos(todoRemove) {
+    todoLists = leadsFromLocalStorage
+    const todoIndex = todoRemove.children[2].innerText
+    todoLists.splice(todoLists.indexOf(todoIndex), 1)
+    localStorage.setItem('todoLists', JSON.stringify(todoLists))
+  }
 
   listWrapper.classList.add('list-wrapper')
   todoCheckboxLabel.classList.add('circle')
@@ -92,7 +101,7 @@ const render = (lists) => {
       (closest, child) => {
         const box = child.getBoundingClientRect()
         const offset = y - box.top - box.height / 2
-        console.log(offset)
+        // console.log(offset)
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child }
         } else {
@@ -123,16 +132,18 @@ const updateTodoLists = (value, bool) => {
   })
 }
 
-// if (leadsFromLocalStorage) {
-//   todoLists = leadsFromLocalStorage
-//   render(todoLists)
-// }
+if (leadsFromLocalStorage) {
+  todoLists = leadsFromLocalStorage
+  todoLists.forEach((todo) => {
+    render(todo.value, todo.checked)
+  })
+}
 
 /*event listener*/
 // change theme
 themeChanger.addEventListener('click', () => {
   document.body.classList.toggle('light')
-  console.log('changed theme')
+  // console.log('changed theme')
 })
 
 // keyboard enter
@@ -140,11 +151,11 @@ inputEl.addEventListener('keyup', (e) => {
   if (inputEl.value !== '') {
     if (e.key === 'Enter' || e.keyCode === 13) {
       todoLists.push({ value: e.target.value, checked: false })
-      render(e.target.value)
+      render(e.target.value, false)
       inputEl.value = ''
       countItems()
-      // localStorage.setItem('todoLists', JSON.stringify(todoLists))
-      console.log(todoLists)
+      localStorage.setItem('todoLists', JSON.stringify(todoLists))
+      // console.log(todoLists)
     }
   }
 })
@@ -156,6 +167,7 @@ clearBtn.addEventListener('click', () => {
       listWrapper.remove()
     }
   })
+  localStorage.removeItem('todoLists')
 })
 
 // filter all
