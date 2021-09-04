@@ -9,7 +9,7 @@ const clearBtn = document.querySelector('.clear-btn')
 const allBtn = document.querySelector('.all-btn')
 const activeBtn = document.querySelector('.active-btn')
 const completedBtn = document.querySelector('.completed-btn')
-const leadsFromLocalStorage = JSON.parse(localStorage.getItem('todoLists'))
+const listsFromLocalStorage = JSON.parse(localStorage.getItem('todoLists'))
 
 /* function */
 //add todo list
@@ -33,6 +33,8 @@ const render = (lists, check) => {
       todoCheckboxLabel.classList.remove('active')
       updateTodoLists(lists, false)
       countItems()
+      todoLists.push({ value: lists, checked: check })
+      localStorage.setItem('todoLists', JSON.stringify(todoLists))
       // console.log(todoLists)
     } else {
       todoCheckbox.checked = true
@@ -41,6 +43,7 @@ const render = (lists, check) => {
       todoCheckboxLabel.classList.add('active')
       updateTodoLists(lists, true)
       countItems()
+      removeLocalTodos(listWrapper)
       // console.log(todoLists)
     }
   })
@@ -55,10 +58,12 @@ const render = (lists, check) => {
   })
 
   function removeLocalTodos(todoRemove) {
-    todoLists = leadsFromLocalStorage
+    todoLists = listsFromLocalStorage
     const todoIndex = todoRemove.children[2].innerText
-    todoLists.splice(todoLists.indexOf(todoIndex), 1)
+    const todoFilter = todoLists.filter((t) => t.value === todoIndex)
+    todoLists.splice(todoLists.indexOf(todoFilter[0]), 1)
     localStorage.setItem('todoLists', JSON.stringify(todoLists))
+    // console.log(todoFilterString)
   }
 
   listWrapper.classList.add('list-wrapper')
@@ -132,8 +137,8 @@ const updateTodoLists = (value, bool) => {
   })
 }
 
-if (leadsFromLocalStorage) {
-  todoLists = leadsFromLocalStorage
+if (listsFromLocalStorage) {
+  todoLists = listsFromLocalStorage
   todoLists.forEach((todo) => {
     render(todo.value, todo.checked)
   })
